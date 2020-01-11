@@ -1,0 +1,10 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - Tira2019",
+            "request": "launch",
+            "mainClass": "Tira2019"
+        }
+    ]
+}
