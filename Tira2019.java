@@ -24,14 +24,6 @@ class Solmu<K, V>
         this.value = value; 
     }
 
-    /*public boolean hasNext() {
-        if(this.next != null) {
-            return true;
-        }
-        else {
-            return false;
-        }
-    } */
 } 
 
 // Oma hajautustaulu-luokka
