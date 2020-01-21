@@ -173,10 +173,13 @@ class Hajautustaulu<K, V>
 
 public class Tira2019 {
     
-    static Hajautustaulu<Integer, Integer>mapABkpl = new Hajautustaulu<>();
-    static Hajautustaulu<Integer, Integer>mapArivi = new Hajautustaulu<>();
-    static Hajautustaulu<Integer, Integer>mapBrivi = new Hajautustaulu<>();
-    
+    static Hajautustaulu<Integer, Integer>mapOR = new Hajautustaulu<>();
+    static Hajautustaulu<Integer, Integer>ANDapu = new Hajautustaulu<>();
+    static Hajautustaulu<Integer, Integer>mapAND = new Hajautustaulu<>();
+    static Hajautustaulu<Integer, Character>aXOR = new Hajautustaulu<>();
+    static Hajautustaulu<Integer, Character>bXOR = new Hajautustaulu<>();
+
+
     //ei toimi tällä hetkellä
     private static void tulostaA() {
         int lkm = 0;
@@ -208,18 +211,23 @@ public class Tira2019 {
             File setA = new File("setA.txt");
             Scanner tiedostoA = new Scanner(setA);
             int rivi = 1;
+            char tiedosto = "A";
             while(tiedostoA.hasNextLine()) {
                 int alkio = Integer.parseInt(tiedostoA.nextLine());
-                if(mapABkpl.get(alkio) == null) {
-                    mapABkpl.add(alkio, 1);
+                if(mapOR.get(alkio) == null) {
+                    mapOR.add(alkio, 1);
                 } else {
-                    int kpl = mapABkpl.get(alkio);
-                    mapABkpl.remove(alkio);
-                    mapABkpl.add(alkio, (kpl + 1));
+                    int kpl = mapOR.get(alkio);
+                    mapOR.remove(alkio);
+                    mapOR.add(alkio, (kpl + 1));
                 }
                 
-                if(mapArivi.get(alkio) == null) {
-                    mapArivi.add(alkio, rivi);
+                if(ANDapu.get(alkio) == null) {
+                    ANDapu.add(alkio, rivi);
+                }
+
+                if(aXOR.get(alkio) != null) {
+                    aXOR.add(alkio, tiedosto);
                 }
                 
                 rivi++;                
@@ -231,20 +239,27 @@ public class Tira2019 {
         try {
             File setB = new File("setB.txt");
             Scanner tiedostoB = new Scanner(setB);
-            int rivi = 1;
+            int rivi;
+            char tiedosto = "B";
             while(tiedostoB.hasNextLine()) {
                 int alkio = Integer.parseInt(tiedostoB.nextLine());
-                if(mapABkpl.get(alkio) == null) {
-                    mapABkpl.add(alkio, 1);
+                if(mapOR.get(alkio) == null) {
+                    mapOR.add(alkio, 1);
                 } else {
-                    int kpl = mapABkpl.get(alkio);
-                    mapABkpl.remove(alkio);
-                    mapABkpl.add(alkio, (kpl + 1));
+                    int kpl = mapOR.get(alkio);
+                    mapOR.remove(alkio);
+                    mapOR.add(alkio, (kpl + 1));
                 }
                 
-                if(mapArivi.get(alkio) != null) {
-                    rivi = mapArivi.get(alkio);
-                    mapBrivi.add(alkio, rivi);
+                if(ANDapu.get(alkio) != null) {
+                    rivi = ANDapu.get(alkio);
+                    mapAND.add(alkio, rivi);
+                }
+                if(aXOR.get(alkio) == null) {
+                    bXOR.add(alkio, tiedosto);
+                }
+                else {
+                    aXOR.remove(alkio);
                 }
                                
             }
@@ -261,12 +276,12 @@ public class Tira2019 {
             BufferedWriter bwand = new BufferedWriter(new FileWriter("and.txt"));
             BufferedWriter bwxor = new BufferedWriter(new FileWriter("xor.txt"));
 
-            for(int i = 0; i < mapABkpl.lokerotaulukko.koko; i++) {
-                //tulostetaan mapABkpl avain-arvot -> or.txt
+            for(int i = 0; i < mapOR.lokerotaulukko.size(); i++) {
+                //tulostetaan mapOR avain-arvot -> or.txt
             }
 
-            for(int i = 0; i < mapBrivi.lokerotaulukko.koko; i++) {
-                //tulostetaan mapBrivi avain-arvot -> and.txt
+            for(int i = 0; i < mapAND.lokerotaulukko.size(); i++) {
+                //tulostetaan mapAND avain-arvot -> and.txt
             }
             	
             
@@ -312,8 +327,8 @@ public class Tira2019 {
                 System.out.println("Anna poistettava alkio.");
                 String rivi = lukija.nextline();
                 int alkio = Integer.parseInt(rivi);
-                mapABkpl.remove(alkio);
-                mapBrivi.remove(alkio);
+                mapOR.remove(alkio);
+                mapAND.remove(alkio);
             } */else {
                 System.out.println("Virheellinen komento.");
             }
