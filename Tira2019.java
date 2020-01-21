@@ -173,11 +173,11 @@ class Hajautustaulu<K, V>
 
 public class Tira2019 {
     
-    static Hajautustaulu<Integer, Integer>mapAkpl = new Hajautustaulu<>();
-    static Hajautustaulu<Integer, Integer>mapBkpl = new Hajautustaulu<>();
+    static Hajautustaulu<Integer, Integer>mapABkpl = new Hajautustaulu<>();
     static Hajautustaulu<Integer, Integer>mapArivi = new Hajautustaulu<>();
     static Hajautustaulu<Integer, Integer>mapBrivi = new Hajautustaulu<>();
     
+    //ei toimi tällä hetkellä
     private static void tulostaA() {
         int lkm = 0;
         System.out.println("Alkio - lukumäärä joukossa");
@@ -190,6 +190,7 @@ public class Tira2019 {
         System.out.println("Alkioita yhteensä: " + lkm);
     }
     
+    //ei toimi tällä hetkellä
     private static void tulostaB() {
         int lkm = 0;
         System.out.println("Alkio - lukumäärä joukossa");
@@ -209,12 +210,12 @@ public class Tira2019 {
             int rivi = 1;
             while(tiedostoA.hasNextLine()) {
                 int alkio = Integer.parseInt(tiedostoA.nextLine());
-                if(mapAkpl.get(alkio) == null) {
-                    mapAkpl.add(alkio, 1);
+                if(mapABkpl.get(alkio) == null) {
+                    mapABkpl.add(alkio, 1);
                 } else {
-                    int kpl = mapAkpl.get(alkio);
-                    mapAkpl.remove(alkio);
-                    mapAkpl.add(alkio, (kpl + 1));
+                    int kpl = mapABkpl.get(alkio);
+                    mapABkpl.remove(alkio);
+                    mapABkpl.add(alkio, (kpl + 1));
                 }
                 
                 if(mapArivi.get(alkio) == null) {
@@ -233,19 +234,19 @@ public class Tira2019 {
             int rivi = 1;
             while(tiedostoB.hasNextLine()) {
                 int alkio = Integer.parseInt(tiedostoB.nextLine());
-                if(mapBkpl.get(alkio) == null) {
-                    mapBkpl.add(alkio, 1);
+                if(mapABkpl.get(alkio) == null) {
+                    mapABkpl.add(alkio, 1);
                 } else {
-                    int kpl = mapBkpl.get(alkio);
-                    mapBkpl.remove(alkio);
-                    mapBkpl.add(alkio, (kpl + 1));
+                    int kpl = mapABkpl.get(alkio);
+                    mapABkpl.remove(alkio);
+                    mapABkpl.add(alkio, (kpl + 1));
                 }
                 
-                if(mapBrivi.get(alkio) == null) {
+                if(mapArivi.get(alkio) != null) {
+                    rivi = mapArivi.get(alkio);
                     mapBrivi.add(alkio, rivi);
                 }
-                
-                rivi++;               
+                               
             }
         } catch(IOException e) {
             System.out.println("setB.txt not found.");
@@ -259,12 +260,20 @@ public class Tira2019 {
             BufferedWriter bwor = new BufferedWriter(new FileWriter("or.txt")); 
             BufferedWriter bwand = new BufferedWriter(new FileWriter("and.txt"));
             BufferedWriter bwxor = new BufferedWriter(new FileWriter("xor.txt"));
+
+            for(int i = 0; i < mapABkpl.lokerotaulukko.koko; i++) {
+                //tulostetaan mapABkpl avain-arvot -> or.txt
+            }
+
+            for(int i = 0; i < mapBrivi.lokerotaulukko.koko; i++) {
+                //tulostetaan mapBrivi avain-arvot -> and.txt
+            }
             	
             
         } catch (IOException e) {
             System.err.format("IOException: %s%n", e);
         }
-        System.out.println("Writing file...");
+        System.out.println("Writing files...");
     }
     
     public static void main(String[] args) {
@@ -279,6 +288,7 @@ public class Tira2019 {
             System.out.println("Komennot:");
             System.out.println("tarkastele");
             System.out.println("kirjoita");
+            //System.out.println("poista");
             System.out.println("lopeta");
             System.out.println("");
             System.out.println("Anna komento:");
@@ -298,7 +308,13 @@ public class Tira2019 {
             } else if(komento.equals("kirjoita")) {
                 System.out.println("kirjoitetaan");
                 ht.writeOutput();
-            } else {
+            } /*else if(komento.equals("poista")) {
+                System.out.println("Anna poistettava alkio.");
+                String rivi = lukija.nextline();
+                int alkio = Integer.parseInt(rivi);
+                mapABkpl.remove(alkio);
+                mapBrivi.remove(alkio);
+            } */else {
                 System.out.println("Virheellinen komento.");
             }
             System.out.println("");

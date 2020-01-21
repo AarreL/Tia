@@ -1,0 +1,26 @@
+
+rivi 118-119 muutettu bucketIndex -> lokeroIndeksi
+
+rivillä 141 add päivittää vain solmun arvon mikäli avain on tullut jo aiemmin?
+if (head.key.equals(key)) { 
+       head.value = value; 
+       return;}
+
+lisätty käyttöliittymää kommenttien taakse
+
+
+or.txt
+Vain yksi hashmap (mapABkpl) johon kerätään ensin setA luvut ja niiden esiintymisfrekvenssi, sitten setB
+luvut ja niiden esiintymisfrekvenssi, jonka jälkene mapABkpl sisältää avain-alkio pareja joissa
+avain on jommastakummasta tiedostosta luettu luku ja alkio sen esiintymisfrekvenssi molemmissa tiedostoissa.
+Sitten vaan tulostetaan or.txt näitä avain-alkio pareja yksi kerrallaan ja valmis.
+
+and.txt
+Nyt kaksi hashmappia, olkoon vaikkapa jo olemassaolevat mapArivi ja mapBrivi, joihin kerätään avain-alkio 
+pareiksi kaikki setA luvut, asettaen avaimiksi luvun ja alkioiksi rivin jolla luku esiintyy ensimmäisen 
+kerran. Kun käydään setB läpi, tutkitaan löytyykö sillä hetkellä tarkasteltava luku mapArivi avaimista 
+(eli onko tullut jo setA läpikäydessä vastaan), mikäli löytyy niin lisätään mapBrivi kyseinen luku jonka 
+pariksi otetaan mapArivi oleva "alkio" (jossa ensiesiintymisen rivi arvona). Sitten tulostetaan and.txt 
+johon otetaan mapBrivi avain-alkio parit ylös.
+
+xor.txt
