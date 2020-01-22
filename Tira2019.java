@@ -180,7 +180,7 @@ public class Tira2019 {
     static Hajautustaulu<Integer, Character>bXOR = new Hajautustaulu<>();
 
 
-    //ei toimi tällä hetkellä
+    /*ei toimi tällä hetkellä
     private static void tulostaA() {
         int lkm = 0;
         System.out.println("Alkio - lukumäärä joukossa");
@@ -191,9 +191,9 @@ public class Tira2019 {
             }
         }
         System.out.println("Alkioita yhteensä: " + lkm);
-    }
+    }*/
     
-    //ei toimi tällä hetkellä
+    /*ei toimi tällä hetkellä
     private static void tulostaB() {
         int lkm = 0;
         System.out.println("Alkio - lukumäärä joukossa");
@@ -204,14 +204,14 @@ public class Tira2019 {
             }
         }
         System.out.println("Alkioita yhteensä: " + lkm);
-    }
+    }*/
     
     private void readInput() {
         try {
             File setA = new File("setA.txt");
             Scanner tiedostoA = new Scanner(setA);
             int rivi = 1;
-            char tiedosto = "A";
+            char tiedosto = 'A';
             while(tiedostoA.hasNextLine()) {
                 int alkio = Integer.parseInt(tiedostoA.nextLine());
                 if(mapOR.get(alkio) == null) {
@@ -240,7 +240,7 @@ public class Tira2019 {
             File setB = new File("setB.txt");
             Scanner tiedostoB = new Scanner(setB);
             int rivi;
-            char tiedosto = "B";
+            char tiedosto = 'B';
             while(tiedostoB.hasNextLine()) {
                 int alkio = Integer.parseInt(tiedostoB.nextLine());
                 if(mapOR.get(alkio) == null) {
@@ -271,24 +271,60 @@ public class Tira2019 {
     private void writeOutput() {
 
         String outputrow = "";
+        int orlaskuri = 0;
+        int andlaskuri = 0;
+        int xorlaskuri = 0;
         try {
-            BufferedWriter bwor = new BufferedWriter(new FileWriter("or.txt")); 
+            BufferedWriter bwor = new BufferedWriter(new FileWriter("or.txt"));
             BufferedWriter bwand = new BufferedWriter(new FileWriter("and.txt"));
             BufferedWriter bwxor = new BufferedWriter(new FileWriter("xor.txt"));
+            
 
             for(int i = 0; i < mapOR.lokerotaulukko.size(); i++) {
-                //tulostetaan mapOR avain-arvot -> or.txt
+                if(mapOR.lokerotaulukko.get(i) != null) {
+                    outputrow = mapOR.lokerotaulukko.get(i).key + " - " + mapOR.lokerotaulukko.get(i).value;
+                    bwor.write(outputrow);
+                    bwor.newLine();
+                    orlaskuri++;
+                }
             }
 
             for(int i = 0; i < mapAND.lokerotaulukko.size(); i++) {
-                //tulostetaan mapAND avain-arvot -> and.txt
+                if(mapAND.lokerotaulukko.get(i) != null) {
+                    outputrow = mapAND.lokerotaulukko.get(i).key + " - " + mapAND.lokerotaulukko.get(i).value;
+                    bwand.write(outputrow);
+                    bwand.newLine();
+                    andlaskuri++;
+                }
             }
-            	
+
+            for(int i = 0; i < aXOR.lokerotaulukko.size(); i++) {
+                if(aXOR.lokerotaulukko.get(i) != null) {
+                    outputrow = aXOR.lokerotaulukko.get(i).key + " - " + aXOR.lokerotaulukko.get(i).value;
+                    bwxor.write(outputrow);
+                    bwxor.newLine();
+                    xorlaskuri++;
+                }
+            }
+
+            for(int i = 0; i < bXOR.lokerotaulukko.size(); i++) {
+                if(bXOR.lokerotaulukko.get(i) != null) {
+                    outputrow = bXOR.lokerotaulukko.get(i).key + " - " + bXOR.lokerotaulukko.get(i).value;
+                    bwxor.write(outputrow);
+                    bwxor.newLine();
+                    xorlaskuri++;
+                }
+            }
+
             
         } catch (IOException e) {
             System.err.format("IOException: %s%n", e);
         }
         System.out.println("Writing files...");
+        System.out.println("Files written.");
+        System.out.println("or.txt " + orlaskuri + " rows.");
+        System.out.println("and.txt " + andlaskuri + " rows.");
+        System.out.println("xor.txt " + xorlaskuri + " rows.");
     }
     
     public static void main(String[] args) {
@@ -301,35 +337,27 @@ public class Tira2019 {
 
         while(kysyKomento) {
             System.out.println("Komennot:");
-            System.out.println("tarkastele");
             System.out.println("kirjoita");
-            //System.out.println("poista");
+            System.out.println("poista");
             System.out.println("lopeta");
             System.out.println("");
             System.out.println("Anna komento:");
             String komento = lukija.nextLine();
             if(komento.equals("lopeta")) {
                 kysyKomento = false;
-            } else if(komento.equals("tarkastele")) {
-                System.out.println("Anna tarkasteltava joukko A tai B (muuten palataan alkuun):");
-                String joukko = lukija.nextLine();
-                if(joukko.equals("A")) {
-                    tulostaA();
-                } else if(joukko.equals("B")) {
-                    tulostaB();
-                } else {
-                        System.out.println("Virheellinen joukko, palataan alkuun.");
-                }
             } else if(komento.equals("kirjoita")) {
                 System.out.println("kirjoitetaan");
                 ht.writeOutput();
-            } /*else if(komento.equals("poista")) {
+            } else if(komento.equals("poista")) {
                 System.out.println("Anna poistettava alkio.");
-                String rivi = lukija.nextline();
+                String rivi = lukija.nextLine();
                 int alkio = Integer.parseInt(rivi);
                 mapOR.remove(alkio);
                 mapAND.remove(alkio);
-            } */else {
+                aXOR.remove(alkio);
+                bXOR.remove(alkio);
+                System.out.println("Alkio poistettu.");
+            } else {
                 System.out.println("Virheellinen komento.");
             }
             System.out.println("");
