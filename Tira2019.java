@@ -282,9 +282,8 @@ public class Tira2019 {
 
             for(int i = 0; i < mapOR.lokerotaulukko.size(); i++) {
                 if(mapOR.lokerotaulukko.get(i) != null) {
-                    outputrow = mapOR.lokerotaulukko.get(i).key + " - " + mapOR.lokerotaulukko.get(i).value;
+                    outputrow = mapOR.lokerotaulukko.get(i).key + " - " + mapOR.lokerotaulukko.get(i).value + "/n";
                     bwor.write(outputrow);
-                    bwor.newLine();
                     orlaskuri++;
                 }
             }
