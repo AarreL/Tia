@@ -9,26 +9,25 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Scanner;
 
+//luokka hajautustaulun solmuille
+class Solmu<K, V> { 
 
-class Solmu<K, V> 
-{ 
     K key; 
     V value; 
   
     // Viittaus seuraavaan solmuun 
     Solmu<K, V> next; 
   
-    public Solmu(K key, V value) 
-    { 
+    public Solmu(K key, V value) { 
         this.key = key; 
         this.value = value; 
     }
 
 } 
 
-// Oma hajautustaulu-luokka
-class Hajautustaulu<K, V> 
-{ 
+//Luokka hajautustaululle
+class Hajautustaulu<K, V> { 
+
     // Lokerotaulukko
     public ArrayList<Solmu<K, V>> lokerotaulukko; 
   
@@ -39,8 +38,7 @@ class Hajautustaulu<K, V>
     private int koko; 
   
     // Rakentaja alustaa lokerotaulukon ja asettaa sen lokeroihin tyhjät sekvenssit
-    public Hajautustaulu() 
-    { 
+    public Hajautustaulu() { 
         lokerotaulukko = new ArrayList<>(); 
         kapasiteetti = 10; 
         koko = 0; 
@@ -56,45 +54,42 @@ class Hajautustaulu<K, V>
         return size() == 0; 
     } 
   
-    // This implements hash function to find index 
-    // for a key 
-    private int getLokeroIndeksi(K key) 
-    { 
+    // Hajautusfunktio jolla löydetään annetun avaimen indeksi
+    private int getLokeroIndeksi(K key) { 
         int hashCode = key.hashCode(); 
         int index = hashCode % kapasiteetti; 
         return index; 
     } 
   
-    // Method to remove a given key 
-    public V remove(K key) 
-    { 
-        // Apply hash function to find index for given key 
+    // Avaimen poisto 
+    public V remove(K key) {
+
+        // Haetaan indeksi avaimelle 
         int lokeroIndeksi = getLokeroIndeksi(key); 
   
-        // Get head of chain 
+        // Etsitään ketjun pää 
         Solmu<K, V> head = lokerotaulukko.get(lokeroIndeksi); 
   
-        // Search for key in its chain 
+        //tEtsitään avain ketjusta 
         Solmu<K, V> prev = null; 
-        while (head != null) 
-        { 
-            // If Key found 
+        while (head != null) {
+
+            // Jos löydetään avain 
             if (head.key.equals(key)) 
                 break; 
   
-            // Else keep moving in chain 
+            // Muutoin jatketaan ketjun läpikäyntiä
             prev = head; 
             head = head.next; 
         } 
   
-        // If key was not there 
+        // Avainta ei löydy 
         if (head == null) 
             return null; 
-  
-        // Reduce size 
+
         koko--; 
   
-        // Remove key 
+        // Poistetaan avain 
         if (prev != null) 
             prev.next = head.next; 
         else
@@ -103,14 +98,14 @@ class Hajautustaulu<K, V>
         return head.value; 
     } 
   
-    // Returns value for a key 
-    public V get(K key) 
-    { 
-        // Find head of chain for given key 
+    // Operaatio avaimeen liittyvän arvon palauttamiseen 
+    public V get(K key) {
+
+        // Haetaan annetun avainmen ketjun pää 
         int lokeroIndeksi = getLokeroIndeksi(key); 
         Solmu<K, V> head = lokerotaulukko.get(lokeroIndeksi); 
   
-        // Search key in chain 
+        // Etsitään avain 
         while (head != null) 
         { 
             if (head.key.equals(key)) 
@@ -118,20 +113,19 @@ class Hajautustaulu<K, V>
             head = head.next; 
         } 
   
-        // If key not found 
+        // Palautetaan null jos ei löydy 
         return null; 
     } 
   
-    // Adds a key value pair to hash 
-    public void add(K key, V value) 
-    { 
-        // Find head of chain for given key 
+    // Operaatio avain-arvo parin lisäämiseen 
+    public void add(K key, V value) {
+
+        // Etsitään annetun avaimen ketju 
         int lokeroIndeksi = getLokeroIndeksi(key); 
         Solmu<K, V> head = lokerotaulukko.get(lokeroIndeksi); 
   
-        // Check if key is already present 
-        while (head != null) 
-        { 
+        //Mikäli avain on jo olemassa päivitetään vain arvo 
+        while (head != null) { 
             if (head.key.equals(key)) 
             { 
                 head.value = value; 
@@ -140,17 +134,15 @@ class Hajautustaulu<K, V>
             head = head.next; 
         } 
   
-        // Insert key in chain 
+        // Lisätään avain ketjuun 
         koko++; 
         head = lokerotaulukko.get(lokeroIndeksi); 
         Solmu<K, V> uusiSolmu = new Solmu<K, V>(key, value); 
         uusiSolmu.next = head; 
         lokerotaulukko.set(lokeroIndeksi, uusiSolmu); 
   
-        // If load factor goes beyond threshold, then 
-        // double hash table size 
-        if ((1.0*koko)/kapasiteetti >= 0.7) 
-        { 
+        // Jos täyttöaste nousee yli 70%, kaksinkertaistetaan taulun koko
+        if ((1.0*koko)/kapasiteetti >= 0.7) { 
             ArrayList<Solmu<K, V>> temp = lokerotaulukko; 
             lokerotaulukko = new ArrayList<>(); 
             kapasiteetti = 2 * kapasiteetti; 
@@ -158,8 +150,7 @@ class Hajautustaulu<K, V>
             for (int i = 0; i < kapasiteetti; i++) 
                 lokerotaulukko.add(null); 
   
-            for (Solmu<K, V> headNode : temp) 
-            { 
+            for (Solmu<K, V> headNode : temp) { 
                 while (headNode != null) 
                 { 
                     add(headNode.key, headNode.value); 
@@ -173,39 +164,13 @@ class Hajautustaulu<K, V>
 
 public class Tira2019 {
     
+    //luodaan vähän hajautustauluja joukko-operaatioita varten
     static Hajautustaulu<Integer, Integer>mapOR = new Hajautustaulu<>();
     static Hajautustaulu<Integer, Integer>ANDapu = new Hajautustaulu<>();
     static Hajautustaulu<Integer, Integer>mapAND = new Hajautustaulu<>();
     static Hajautustaulu<Integer, Character>aXOR = new Hajautustaulu<>();
-    static Hajautustaulu<Integer, Character>bXOR = new Hajautustaulu<>();
 
-
-    /*ei toimi tällä hetkellä
-    private static void tulostaA() {
-        int lkm = 0;
-        System.out.println("Alkio - lukumäärä joukossa");
-        for(int i = 0; i < mapAkpl.lokerotaulukko.size(); i++) {
-            if(mapAkpl.lokerotaulukko.get(i) != null) {
-                System.out.println(mapAkpl.lokerotaulukko.get(i).key + " - " + mapAkpl.lokerotaulukko.get(i).value);
-                lkm += mapAkpl.lokerotaulukko.get(i).value;
-            }
-        }
-        System.out.println("Alkioita yhteensä: " + lkm);
-    }*/
-    
-    /*ei toimi tällä hetkellä
-    private static void tulostaB() {
-        int lkm = 0;
-        System.out.println("Alkio - lukumäärä joukossa");
-        for(int i = 0; i < mapBkpl.lokerotaulukko.size(); i++) {
-            if(mapBkpl.lokerotaulukko.get(i) != null) {
-                System.out.println(mapBkpl.lokerotaulukko.get(i).key + " - " + mapBkpl.lokerotaulukko.get(i).value);
-                lkm += mapBkpl.lokerotaulukko.get(i).value;
-            }
-        }
-        System.out.println("Alkioita yhteensä: " + lkm);
-    }*/
-    
+    //Luetaan tekstitiedostosta setA.txt luvut muuttujaan yksi kerrallaan
     private void readInput() {
         try {
             File setA = new File("setA.txt");
@@ -214,6 +179,10 @@ public class Tira2019 {
             char tiedosto = 'A';
             while(tiedostoA.hasNextLine()) {
                 int alkio = Integer.parseInt(tiedostoA.nextLine());
+
+                //Mikäli alkiota ei ole OR-tiedostosta lukua pitävässä taulussa, lisätään se
+                //Mikäli alkio on kyseisessä taulussa, päivitetään sen esiintymiskertojen lukumäärä
+                //yhtä isommaksi
                 if(mapOR.get(alkio) == null) {
                     mapOR.add(alkio, 1);
                 } else {
@@ -222,20 +191,23 @@ public class Tira2019 {
                     mapOR.add(alkio, (kpl + 1));
                 }
                 
+                //Tutkitaan onko alkio AND-tiedostoon liittyvässä aputaulussa, mikäli ei ole, lisätään se
                 if(ANDapu.get(alkio) == null) {
                     ANDapu.add(alkio, rivi);
                 }
 
-                if(aXOR.get(alkio) != null) {
+                //Tutkitaan onko alkio ensimmäisessä XOR-tiedostoon liittyvässä taulussa, mikäli ei ole, lisätään se
+                if(aXOR.get(alkio) == null) {
                     aXOR.add(alkio, tiedosto);
                 }
                 
                 rivi++;                
             }
         } catch(IOException e) {
-            System.out.println("setA.txt not found.");
+            System.out.println("setA.txt ei löytynyt.");
         }
         
+        //Luetaan tekstitiedostosta setB.txt luvut muuttujaan yksi kerrallaan
         try {
             File setB = new File("setB.txt");
             Scanner tiedostoB = new Scanner(setB);
@@ -243,6 +215,10 @@ public class Tira2019 {
             char tiedosto = 'B';
             while(tiedostoB.hasNextLine()) {
                 int alkio = Integer.parseInt(tiedostoB.nextLine());
+
+                //Mikäli alkiota ei ole OR-tiedostosta lukua pitävässä taulussa, lisätään se
+                //Mikäli alkio on kyseisessä taulussa, päivitetään sen esiintymiskertojen lukumäärä
+                //yhtä isommaksi
                 if(mapOR.get(alkio) == null) {
                     mapOR.add(alkio, 1);
                 } else {
@@ -251,76 +227,115 @@ public class Tira2019 {
                     mapOR.add(alkio, (kpl + 1));
                 }
                 
+                //Tutkitaan onko alkio AND-tiedostoon liittyvässä aputaulussa, mikäli on, lisätään tiedosto
+                //valmiiseen AND tauluun, sillä rivinumerolla mikä ensimmäisessä vaiheessa on annettu
                 if(ANDapu.get(alkio) != null) {
                     rivi = ANDapu.get(alkio);
                     mapAND.add(alkio, rivi);
                 }
-                if(aXOR.get(alkio) == null) {
-                    bXOR.add(alkio, tiedosto);
+
+                //Tutkitaan onko alkio ensimmäisessä XOR-tiedostoon liittyvässä taulussa, mikäli on, poistetaan se sieltä
+                //mikäli ei ole, lisätään se sinne.
+                if(aXOR.get(alkio) != null) {
+                    aXOR.remove(alkio);
                 }
                 else {
-                    aXOR.remove(alkio);
+                    aXOR.add(alkio, tiedosto);
                 }
                                
             }
         } catch(IOException e) {
-            System.out.println("setB.txt not found.");
+            System.out.println("setB.txt ei löytynyt.");
         }        
     }
     
+    //Operaatio tiedostojen kirjoittamiseen
     private void writeOutput() {
 
+        //Muuttujia kirjoittamisen avuksi
         String outputrow = "";
         int orlaskuri = 0;
         int andlaskuri = 0;
         int xorlaskuri = 0;
+        Solmu<Integer, Integer> ORalkio;
+        Solmu<Integer, Integer> ANDalkio;
+        Solmu<Integer, Character> XORalkio;
         try {
+            //Luodaan jokaiselle tiedostolle kirjoitin
             BufferedWriter bwor = new BufferedWriter(new FileWriter("or.txt"));
             BufferedWriter bwand = new BufferedWriter(new FileWriter("and.txt"));
             BufferedWriter bwxor = new BufferedWriter(new FileWriter("xor.txt"));
             
 
+            //Kirjoitetaan or.txt siten että käydään mapOR yksitellen läpi (for silmukassa indeksit, while silmukassa
+            //mahdolliset ketjutetut törmäykset) kirjoittaen kustakin alkiosta avain-arvo pari.
             for(int i = 0; i < mapOR.lokerotaulukko.size(); i++) {
-                if(mapOR.lokerotaulukko.get(i) != null) {
-                    outputrow = mapOR.lokerotaulukko.get(i).key + " - " + mapOR.lokerotaulukko.get(i).value + "/n";
+                ORalkio = mapOR.lokerotaulukko.get(i);
+                if(ORalkio != null) {
+                    outputrow = String.format("%10d" + " - " + ORalkio.value, ORalkio.key);
                     bwor.write(outputrow);
+                    bwor.newLine();
                     orlaskuri++;
+                    while(ORalkio.next != null) {
+                        outputrow = String.format("%10d" + " - " + ORalkio.next.value, ORalkio.next.key);
+                        bwor.write(outputrow);
+                        bwor.newLine();
+                        ORalkio = ORalkio.next;
+                        orlaskuri++;
+                    }
                 }
             }
 
+            //Kirjoitetaan and.txt siten että käydään mapAND yksitellen läpi (for silmukassa indeksit, while silmukassa
+            //mahdolliset ketjutetut törmäykset) kirjoittaen kustakin alkiosta avain-arvo pari.
             for(int i = 0; i < mapAND.lokerotaulukko.size(); i++) {
-                if(mapAND.lokerotaulukko.get(i) != null) {
-                    outputrow = mapAND.lokerotaulukko.get(i).key + " - " + mapAND.lokerotaulukko.get(i).value;
+                ANDalkio = mapAND.lokerotaulukko.get(i);
+                if(ANDalkio != null) {
+                    outputrow = String.format("%10d" + " - " + ANDalkio.value, ANDalkio.key);
                     bwand.write(outputrow);
                     bwand.newLine();
                     andlaskuri++;
+                    while(ANDalkio.next != null) {
+                        outputrow = outputrow = String.format("%10d" + " - " + ANDalkio.next.value, ANDalkio.next.key);
+                        bwand.write(outputrow);
+                        bwand.newLine();
+                        ANDalkio = ANDalkio.next;
+                        andlaskuri++;
+                    }
                 }
             }
 
+            //Kirjoitetaan xor.txt siten että käydään aXOR yksitellen läpi (for silmukassa indeksit, while silmukassa
+            //mahdolliset ketjutetut törmäykset) kirjoittaen kustakin alkiosta avain-arvo pari.
             for(int i = 0; i < aXOR.lokerotaulukko.size(); i++) {
-                if(aXOR.lokerotaulukko.get(i) != null) {
-                    outputrow = aXOR.lokerotaulukko.get(i).key + " - " + aXOR.lokerotaulukko.get(i).value;
+                XORalkio = aXOR.lokerotaulukko.get(i);
+                if(XORalkio != null) {
+                    outputrow = String.format("%10d" + " - " + XORalkio.value, XORalkio.key);
                     bwxor.write(outputrow);
                     bwxor.newLine();
+                    while(XORalkio.next != null) {
+                        outputrow = String.format("%10d" + " - " + XORalkio.next.value, XORalkio.next.key);
+                        bwxor.write(outputrow);
+                        bwxor.newLine();
+                        XORalkio = XORalkio.next;
+                        xorlaskuri++;
+                    }
                     xorlaskuri++;
                 }
             }
 
-            for(int i = 0; i < bXOR.lokerotaulukko.size(); i++) {
-                if(bXOR.lokerotaulukko.get(i) != null) {
-                    outputrow = bXOR.lokerotaulukko.get(i).key + " - " + bXOR.lokerotaulukko.get(i).value;
-                    bwxor.write(outputrow);
-                    bwxor.newLine();
-                    xorlaskuri++;
-                }
-            }
+            //Suljetaan kirjoittajat
+            bwor.close();
+            bwand.close();
+            bwxor.close();
 
             
         } catch (IOException e) {
             System.err.format("IOException: %s%n", e);
         }
-        System.out.println("Writing files...");
-        System.out.println("Files written.");
+
+        //Tulostetaan viesti onnistuneesta kirjoittamisesta, sekä käyttäjälle tiedoksi lopullisten tiedostojen koko.
+        System.out.println("Tiedostot kirjoitettu.");
         System.out.println("or.txt " + orlaskuri + " rows.");
         System.out.println("and.txt " + andlaskuri + " rows.");
         System.out.println("xor.txt " + xorlaskuri + " rows.");
@@ -328,12 +343,14 @@ public class Tira2019 {
     
     public static void main(String[] args) {
 
+        //Aloitetaan Scanner käyttäjän syötteiden lukua varten ja luodaan uusi "harjoitustyö"
         Scanner lukija = new Scanner(System.in);
         Tira2019 ht = new Tira2019();
         ht.readInput();
 
         boolean kysyKomento = true;
 
+        //Käyttöliittymä, käyttäjältä kysellään komentoja kunnes komennoksi tulee lopeta
         while(kysyKomento) {
             System.out.println("Komennot:");
             System.out.println("kirjoita");
@@ -344,6 +361,7 @@ public class Tira2019 {
             String komento = lukija.nextLine();
             if(komento.equals("lopeta")) {
                 kysyKomento = false;
+                System.out.println("Näkemiin!")
             } else if(komento.equals("kirjoita")) {
                 System.out.println("kirjoitetaan");
                 ht.writeOutput();
@@ -354,7 +372,8 @@ public class Tira2019 {
                 mapOR.remove(alkio);
                 mapAND.remove(alkio);
                 aXOR.remove(alkio);
-                bXOR.remove(alkio);
+                ht.writeOutput();
+
                 System.out.println("Alkio poistettu.");
             } else {
                 System.out.println("Virheellinen komento.");
