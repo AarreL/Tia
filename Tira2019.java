@@ -372,7 +372,6 @@ public class Tira2019 {
                 mapOR.remove(alkio);
                 mapAND.remove(alkio);
                 aXOR.remove(alkio);
-                ht.writeOutput();
 
                 System.out.println("Alkio poistettu.");
             } else {
